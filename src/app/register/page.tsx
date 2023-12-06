@@ -9,6 +9,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Link from "next/link";
+import { useState } from "react";
 
 const createUserFormSchema = z
   .object({
@@ -31,7 +32,15 @@ const createUserFormSchema = z
 
 type createUserFormData = z.infer<typeof createUserFormSchema>;
 
+type MessageResponse = {
+  message: string;
+};
+
 export default function Register() {
+  const [successMessage, setSuccessMessage] = useState<MessageResponse | null>(
+    null
+  );
+
   const {
     handleSubmit,
     register,
@@ -75,6 +84,8 @@ export default function Register() {
       }
 
       const response = await request.json();
+
+      setSuccessMessage(response);
 
       console.log(response);
 
@@ -177,6 +188,14 @@ export default function Register() {
                   </span>
                 )}
               </div>
+              
+              {successMessage?.message && (
+                <>
+                  <span className="text-green-500 text-sm">
+                    {successMessage.message}
+                  </span>
+                </>
+              )}
 
               <button
                 type="submit"
